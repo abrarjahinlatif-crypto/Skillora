@@ -1,0 +1,42 @@
+/* ===== Skillora extra themes: Ocean, Sakura, Neon, Aurora, Mocha ===== */
+.theme-options{grid-template-columns:repeat(auto-fill,minmax(118px,1fr))}
+.swatch.ocean{background:linear-gradient(120deg,#e3f4fb,#2b8cc4)}
+.swatch.sakura{background:linear-gradient(120deg,#ffe8f0,#e0668f)}
+.swatch.neon{background:linear-gradient(120deg,#1a1240,#ff4fd8 60%,#19e3c1)}
+.swatch.aurora{background:linear-gradient(120deg,#0b2a30,#35e0a1 60%,#58d3ff)}
+.swatch.mocha{background:linear-gradient(120deg,#2a1f18,#e8a15b)}
+
+body[data-theme=ocean]{--bg:#eef7fb;--paper:rgba(255,255,255,.7);--ink:#17303d;--muted:#6b8593;--line:rgba(23,48,61,.12);--orange:#2b8cc4;--orange2:#6cc4e8;--green:#3aa59b;--btn-ink:#fff}
+body[data-theme=sakura]{--bg:#fff2f6;--paper:rgba(255,255,255,.72);--ink:#3a2530;--muted:#9a7f8b;--line:rgba(58,37,48,.11);--orange:#e0668f;--orange2:#f7a1bd;--green:#8fb8a8;--btn-ink:#fff}
+body[data-theme=neon]{--bg:#0d0a1f;--paper:rgba(28,20,60,.78);--ink:#f3efff;--muted:#a79fcf;--line:rgba(255,255,255,.12);--shadow:0 18px 55px rgba(0,0,0,.45);--orange:#ff4fd8;--orange2:#7c5cff;--green:#19e3c1;--btn-ink:#fff}
+body[data-theme=aurora]{--bg:#07181c;--paper:rgba(14,40,44,.8);--ink:#e8fbf4;--muted:#8fb5ae;--line:rgba(255,255,255,.11);--shadow:0 18px 55px rgba(0,0,0,.4);--orange:#35e0a1;--orange2:#58d3ff;--green:#9be15d;--btn-ink:#06201a}
+body[data-theme=mocha]{--bg:#1c1511;--paper:rgba(46,35,28,.82);--ink:#f6ebe0;--muted:#b9a592;--line:rgba(255,255,255,.1);--shadow:0 18px 55px rgba(0,0,0,.4);--orange:#e8a15b;--orange2:#f2c58a;--green:#a3b18a;--btn-ink:#26170c}
+
+body[data-theme=ocean] .ambient-one{background:#7fd0f0}body[data-theme=ocean] .ambient-two{background:#8fe0d0}
+body[data-theme=sakura] .ambient-one{background:#ffb3cc}body[data-theme=sakura] .ambient-two{background:#d6c4ff}
+body[data-theme=neon] .ambient-one{background:#ff4fd8;opacity:.28}body[data-theme=neon] .ambient-two{background:#19e3c1;opacity:.22}
+body[data-theme=aurora] .ambient-one{background:#35e0a1;opacity:.26}body[data-theme=aurora] .ambient-two{background:#58d3ff;opacity:.22}
+body[data-theme=mocha] .ambient-one{background:#e8a15b;opacity:.2}body[data-theme=mocha] .ambient-two{background:#a3b18a;opacity:.16}
+
+/* buttons follow the theme colours (new themes only) */
+body[data-theme=ocean] .primary-btn,body[data-theme=sakura] .primary-btn,body[data-theme=neon] .primary-btn,body[data-theme=aurora] .primary-btn,body[data-theme=mocha] .primary-btn{background:linear-gradient(135deg,var(--orange2),var(--orange));color:var(--btn-ink);box-shadow:0 8px 20px color-mix(in srgb,var(--orange) 30%,transparent)}
+body[data-theme=ocean] .lesson-row button,body[data-theme=sakura] .lesson-row button,body[data-theme=neon] .lesson-row button,body[data-theme=aurora] .lesson-row button,body[data-theme=mocha] .lesson-row button{background:var(--orange);color:var(--btn-ink)}
+body[data-theme=ocean] .nav-item:hover,body[data-theme=ocean] .nav-item.active,body[data-theme=sakura] .nav-item:hover,body[data-theme=sakura] .nav-item.active,body[data-theme=neon] .nav-item:hover,body[data-theme=neon] .nav-item.active,body[data-theme=aurora] .nav-item:hover,body[data-theme=aurora] .nav-item.active,body[data-theme=mocha] .nav-item:hover,body[data-theme=mocha] .nav-item.active{background:color-mix(in srgb,var(--orange) 16%,transparent);color:var(--orange)}
+body[data-theme=ocean] .theme-choice.selected,body[data-theme=sakura] .theme-choice.selected,body[data-theme=neon] .theme-choice.selected,body[data-theme=aurora] .theme-choice.selected,body[data-theme=mocha] .theme-choice.selected{background:color-mix(in srgb,var(--orange) 10%,transparent)}
+body[data-theme=ocean] .hero-card{background:linear-gradient(115deg,rgba(255,255,255,.85),rgba(214,239,250,.6))}
+body[data-theme=sakura] .hero-card{background:linear-gradient(115deg,rgba(255,255,255,.85),rgba(255,226,236,.62))}
+
+/* shared rules for the three dark themes */
+body[data-theme=neon] .hero-card,body[data-theme=aurora] .hero-card,body[data-theme=mocha] .hero-card{background:linear-gradient(115deg,var(--paper),color-mix(in srgb,var(--paper) 78%,var(--orange) 14%))}
+body[data-theme=neon] .glass,body[data-theme=aurora] .glass,body[data-theme=mocha] .glass{border-color:var(--line)}
+body[data-theme=neon] .hero-copy p,body[data-theme=neon] .hero-meta,body[data-theme=aurora] .hero-copy p,body[data-theme=aurora] .hero-meta,body[data-theme=mocha] .hero-copy p,body[data-theme=mocha] .hero-meta{color:var(--muted)}
+body[data-theme=neon] .generate-row input,body[data-theme=neon] .chat-input input,body[data-theme=aurora] .generate-row input,body[data-theme=aurora] .chat-input input,body[data-theme=mocha] .generate-row input,body[data-theme=mocha] .chat-input input,body[data-theme=neon] input,body[data-theme=aurora] input,body[data-theme=mocha] input,body[data-theme=neon] textarea,body[data-theme=aurora] textarea,body[data-theme=mocha] textarea{background:rgba(255,255,255,.07);color:var(--ink);border-color:var(--line)}
+body[data-theme=neon] .quote-card,body[data-theme=aurora] .quote-card,body[data-theme=mocha] .quote-card{background:color-mix(in srgb,var(--green) 20%,var(--bg));color:var(--ink)}
+body[data-theme=neon] .stat-icon.orange,body[data-theme=aurora] .stat-icon.orange,body[data-theme=mocha] .stat-icon.orange{background:color-mix(in srgb,var(--orange) 24%,transparent)}
+body[data-theme=neon] .stat-icon.green,body[data-theme=aurora] .stat-icon.green,body[data-theme=mocha] .stat-icon.green{background:color-mix(in srgb,var(--green) 24%,transparent)}
+body[data-theme=neon] .level-bottom button,body[data-theme=aurora] .level-bottom button,body[data-theme=mocha] .level-bottom button{background:color-mix(in srgb,var(--green) 22%,transparent);color:var(--green)}
+body[data-theme=neon] .toggle,body[data-theme=aurora] .toggle,body[data-theme=mocha] .toggle{background:color-mix(in srgb,var(--green) 22%,transparent);color:var(--green)}
+body[data-theme=neon] .avatar,body[data-theme=aurora] .avatar,body[data-theme=mocha] .avatar{background:color-mix(in srgb,var(--orange) 25%,transparent);color:var(--ink)}
+body[data-theme=neon] .quota-pill,body[data-theme=aurora] .quota-pill,body[data-theme=mocha] .quota-pill{color:var(--orange)}
+body[data-theme=neon] .brand-mark,body[data-theme=neon] h2 em{color:var(--orange);text-shadow:0 0 18px color-mix(in srgb,var(--orange) 55%,transparent)}
+body[data-theme=neon] .primary-btn{box-shadow:0 0 22px color-mix(in srgb,var(--orange) 45%,transparent)}

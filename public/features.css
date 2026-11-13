@@ -1,0 +1,74 @@
+/* ==========================================
+   ROADMAP GENERATION PROGRESS BAR
+   ========================================== */
+.gen-progress{max-width:490px;margin-top:16px;padding:14px 16px;border-radius:14px;background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow)}
+.gen-progress.hidden{display:none}
+.gen-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font:700 11px var(--font);color:var(--ink)}
+.gen-row #genPercent{color:var(--muted);font-weight:600;white-space:nowrap}
+.gen-track{height:10px;border-radius:20px;background:rgba(130,130,130,.18);overflow:hidden;margin:10px 0 8px}
+.gen-fill{position:relative;overflow:hidden;height:100%;width:0;border-radius:20px;background:linear-gradient(90deg,var(--orange),#f7c18b);transition:width .35s ease}
+.gen-progress:not(.gen-done):not(.gen-error) .gen-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-100%);animation:gen-shimmer 1.4s ease-in-out infinite}
+@keyframes gen-shimmer{to{transform:translateX(100%)}}
+.gen-note{display:flex;justify-content:space-between;gap:12px;font:10px var(--font);color:var(--muted);line-height:1.5}
+.gen-note #genTime{text-align:right;flex-shrink:0;max-width:55%}
+.gen-progress.gen-done .gen-fill{background:linear-gradient(90deg,var(--green),#b9d3b8)}
+.gen-progress.gen-error .gen-fill{background:#d9695f}
+.gen-progress.gen-error #genStage{color:#c2493f}
+.gen-progress.gen-error .gen-note{display:none}
+[data-theme=midnight] .gen-progress.gen-error #genStage{color:#ff9a8f}
+.generate-row input:disabled{opacity:.6;cursor:not-allowed}
+.primary-btn:disabled{opacity:.7;cursor:wait;transform:none}
+
+/* ==========================================
+   PRINTABLE FLOWCHART (hidden on screen)
+   ========================================== */
+#printSheet{display:none}
+
+@media print{
+	@page{size:A4 portrait;margin:11mm}
+	html,body{background:#fff!important}
+	/* Hide the whole website. Only the flowchart is printed. */
+	body>*:not(#printSheet){display:none!important}
+	#printSheet{display:block}
+	#printSheet,#printSheet *{box-sizing:border-box}
+	#printSheet{font-family:'Manrope',Arial,sans-serif;color:#222;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+	.ps-head{display:flex;justify-content:space-between;gap:16px;border-bottom:2px solid #222;padding-bottom:8px;margin-bottom:12px}
+	.ps-head small{font-size:8px;letter-spacing:.14em;color:#777;font-weight:700}
+	.ps-head h1{font-size:22px;margin:3px 0;line-height:1.15;color:#222}
+	.ps-head p{font-size:10.5px;line-height:1.5;color:#444;margin:0;max-width:520px}
+	.ps-meta{display:flex;flex-direction:column;gap:3px;font-size:9px;color:#555;text-align:right;white-space:nowrap}
+
+	.ps-flow{display:flex;flex-direction:column;align-items:stretch}
+	.ps-node{align-self:center;min-width:55%;max-width:80%;text-align:center;padding:8px 18px;border:2px solid #222;border-radius:999px;break-inside:avoid}
+	.ps-node small{display:block;font-size:8px;letter-spacing:.14em;color:#777;font-weight:800}
+	.ps-node b{display:block;font-size:12.5px;line-height:1.4}
+	.ps-start{background:#fff1e3;border-color:#e07a35}
+	.ps-goal{background:#e8f3e6;border-color:#5f8a60;border-radius:16px}
+
+	.ps-arrow{align-self:center;position:relative;width:2px;height:20px;background:#222}
+	.ps-arrow::after{content:"";position:absolute;left:-4px;bottom:-5px;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid #222}
+
+	.ps-level{break-inside:avoid;border:1.5px solid #222;border-radius:10px;padding:8px 10px 6px;background:#fffdf9}
+	.ps-level.ps-done{border-color:#5f8a60;background:#f3f9f2}
+	.ps-level-head{display:flex;align-items:baseline;gap:8px;margin-bottom:7px}
+	.ps-level-head span{font-size:8px;letter-spacing:.14em;font-weight:800;color:#e07a35}
+	.ps-level-head b{flex:1;font-size:13.5px;color:#222}
+	.ps-level-head em{font-style:normal;font-size:8.5px;color:#666}
+
+	.ps-steps{display:grid;grid-template-columns:repeat(var(--n),1fr) 76px;gap:20px;align-items:stretch}
+	.ps-step{position:relative;min-height:54px;border:1.2px solid #444;border-radius:7px;padding:6px 7px 6px 25px;background:#fff}
+	.ps-step::after{content:"→";position:absolute;right:-17px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:#222}
+	.ps-step small{display:block;font-size:8px;letter-spacing:.12em;color:#888;font-weight:800}
+	.ps-step b{display:block;font-size:10.5px;line-height:1.3;color:#222}
+	.ps-box{position:absolute;left:6px;top:7px;width:12px;height:12px;border:1.4px solid #222;border-radius:2px;font-size:10px;line-height:10px;text-align:center;font-weight:900;color:#3f7a45}
+	.ps-quiz{display:flex;align-items:center;justify-content:center}
+	.ps-loop{display:flex;justify-content:space-between;gap:10px;margin-top:6px;font-size:8.5px;color:#666}
+
+	.ps-week{margin-top:14px;break-inside:avoid}
+	.ps-week h2{margin:0 0 5px;font-size:9px;letter-spacing:.14em;color:#222}
+	.ps-week-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:5px}
+	.ps-day{border:1px solid #bbb;border-radius:5px;padding:5px 6px;font-size:8.5px;line-height:1.35;color:#333}
+	.ps-day b{display:block;font-size:9px;color:#222}
+	.ps-foot{margin:10px 0 0;font-size:8px;color:#777;text-align:center}
+}

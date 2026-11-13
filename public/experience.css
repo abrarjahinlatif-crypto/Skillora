@@ -1,0 +1,26 @@
+@keyframes shell-arrive{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes page-arrive{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tree-sway{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-5px) rotate(1deg)}}
+@keyframes companion-perch{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-5px) rotate(3deg)}}
+@keyframes butterfly-hover{0%,100%{transform:translateY(0) rotate(-7deg)}50%{transform:translateY(-11px) rotate(9deg)}}
+@keyframes level-arrive{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
+.shell{animation:shell-arrive .7s cubic-bezier(.2,.7,.2,1) both}
+.page.active{animation:page-arrive .38s ease-out both}
+#treeStage.tree-awakened .tree-emoji{animation:tree-sway 5s ease-in-out infinite;transform-origin:50% 100%}
+#treeStage.tree-elder .tree-ground{box-shadow:0 12px 28px rgba(104,143,94,.22)}
+.tree-companions{position:absolute;inset:23% 10% auto;height:56%;pointer-events:none;z-index:3}
+.tree-companions span{position:absolute;left:calc(10% + var(--i)*21%);top:calc((var(--i)%2)*20%);font-size:clamp(16px,2.1vw,25px);animation:companion-perch 2.8s ease-in-out infinite;animation-delay:calc(var(--i)*-.4s);filter:drop-shadow(0 3px 4px rgba(41,44,42,.16))}
+.butterfly-companions span{animation-name:butterfly-hover;animation-duration:3.4s}
+#roadmapContent>.level-card{position:relative;overflow:visible;border-left:3px solid var(--orange);animation:level-arrive .48s ease-out both}
+#roadmapContent>.level-card:nth-of-type(even){border-left-color:var(--green);background:color-mix(in srgb,var(--paper) 90%,#8da98c 10%)}
+#roadmapContent>.level-card:nth-of-type(3n){border-left-color:#e4b64d;background:color-mix(in srgb,var(--paper) 91%,#e4b64d 9%)}
+#roadmapContent>.level-card:nth-of-type(2){animation-delay:.06s}
+#roadmapContent>.level-card:nth-of-type(3){animation-delay:.12s}
+#roadmapContent>.level-card:nth-of-type(4){animation-delay:.18s}
+#roadmapContent>.level-card:nth-of-type(5){animation-delay:.24s}
+.skill-card{transition:transform .22s ease,box-shadow .22s ease}
+.skill-card:hover{transform:translateY(-4px);box-shadow:0 22px 48px rgba(95,73,48,.13)}
+#soundToggle[aria-pressed=true],#soundToggle.active{background:var(--green);color:white}
+#taskReview:empty{display:none}
+@media(max-width:760px){.sidebar-bottom{display:flex;flex-direction:row;align-items:center;gap:4px;overflow-x:auto;margin-top:8px}.sidebar-bottom .streak-mini,.sidebar-bottom .sign-btn{display:none}.sidebar-bottom .nav-item{flex:0 0 auto;white-space:nowrap;margin:0;padding:9px 10px;font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff8ef">
+  <title>Skillora — Grow what you know</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/experience.css">
+  <link rel="stylesheet" href="/features.css">
+  <link rel="stylesheet" href="/themes.css">
+  <link rel="stylesheet" href="/social.css">
+    <script src="/splash.js"></script>
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <div id="app" class="shell">
+    <aside class="sidebar glass">
+      <a class="brand" href="#"><span class="brand-mark">✳</span><span>skillora<small>GROW WHAT YOU KNOW</small></span></a>
+      <div class="profile-mini"><div class="avatar" id="avatar">S</div><div><b id="userName">Your learning space</b><small id="userStatus">Guest preview</small></div></div>
+      <div class="nav-label">WORKSPACE</div>
+      <nav>
+        <button class="nav-item active" data-page="home"><span>⌂</span> Home</button>
+        <button class="nav-item" data-page="progress"><span>◉</span> My progress</button>
+        <button class="nav-item" data-page="skills"><span>✳</span> Achieved skills</button>
+        <button class="nav-item" data-page="resources"><span>↗</span> Resources</button>
+        <button class="nav-item" data-page="leaderboard"><span>🏆</span> Leaderboard</button>
+        <button class="nav-item" data-page="profile"><span>☺</span> My profile</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="streak-mini"><span>🔥</span><div><b id="streakCount">0 day streak</b><small>Little steps add up</small></div></div>
+        <button class="nav-item" data-page="settings"><span>⚙</span> Settings</button>
+        <button class="nav-item" data-page="help"><span>?</span> Help & support</button>
+        <button class="sign-btn" id="signBtn">Continue with Google ↗</button>
+      </div>
+      <div class="sidebar-foot">MADE FOR CURIOUS MINDS <span>✦</span></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><div><div class="eyebrow" id="dateLabel">YOUR PERSONAL LEARNING SPACE</div><h1 id="pageTitle">Good evening, learner <span>✦</span></h1></div>
+        <div class="top-actions"><button class="points-pill" id="pointsPill" data-goto="leaderboard" aria-label="Open leaderboard">★ <b id="pointsText">0</b><small> pts</small></button><div class="quota-pill">✧ <b id="quotaText">10</b><small> AI roadmaps left</small></div><button class="icon-btn" id="helpOpen" aria-label="Open help">?</button><div class="avatar top-avatar" id="topAvatar">S</div></div>
+      </header>
+      <section id="page-home" class="page active">
+        <div class="hero-grid">
+          <div class="hero-card glass"><div class="hero-copy"><span class="tag"><i></i> YOUR NEXT CHAPTER STARTS HERE</span><h2>Turn curiosity<br>into <em>mastery.</em></h2><p>Tell us what you want to learn. Your AI study companion will map the journey, one achievable step at a time.</p>
+            <div class="generate-row"><input id="subjectInput" placeholder="e.g. Python, calculus, graphic design..." maxlength="100"><button id="generateBtn" class="primary-btn">Build my roadmap <span>↗</span></button></div>
+            <div id="genProgress" class="gen-progress hidden"><div class="gen-row"><span id="genStage" aria-live="polite">Preparing your learning roadmap…</span><span id="genPercent">0%</span></div><div id="genBar" class="gen-track" role="progressbar" aria-label="Roadmap generation progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="genFill" class="gen-fill"></div></div><div class="gen-note"><span>Estimated progress. The AI cannot report its exact progress.</span><span id="genTime"></span></div></div>
+            <div class="hero-meta"><span>✦ Personalized learning path</span><span>◷ Learn at your own pace</span></div>
+          </div><div class="hero-art"><div class="sun-disc"></div><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="leaf leaf-a">✦</div><div class="leaf leaf-b">✧</div><div class="tree-stage" id="treeStage"><div class="tree-emoji" id="treeEmoji">🌱</div><div class="tree-ground"></div></div><div class="art-caption">YOUR KNOWLEDGE TREE<small id="treeCaption">A little growth every day</small></div></div></div>
+          <div class="side-stats"><div class="stat-card glass"><span class="stat-icon orange">✳</span><small>SKILLS GROWING</small><strong id="skillCount">0</strong><span class="stat-note">Every expert starts somewhere</span></div><div class="stat-card glass"><span class="stat-icon green">◷</span><small>LEARNING STREAK</small><strong id="streakBig">0 <i>days</i></strong><span class="stat-note">Show up for yourself today</span></div><div class="quote-card"><span>“</span><p>Small progress is still progress. Keep going.</p><small>— YOUR FUTURE SELF</small></div></div>
+        </div>
+        <div class="section-head"><div><div class="eyebrow">YOUR LEARNING WORLD</div><h3>Pick up where you left off</h3></div><button class="text-btn" data-goto="progress">View all progress ↗</button></div>
+        <div id="recentSkills" class="skill-grid"><div class="empty-card glass"><span>✧</span><b>Your first skill is waiting.</b><p>Create a roadmap and watch your learning tree grow.</p></div></div>
+      </section>
+
+      <section id="page-roadmap" class="page">
+        <button class="back-btn" data-goto="home">← Back home</button>
+        <div id="roadmapContent"></div>
+      </section>
+      <section id="page-progress" class="page">
+        <div class="section-head"><div><div class="eyebrow">THE JOURNEY SO FAR</div><h2>Your progress</h2><p class="muted">Consistency beats intensity. Look how far you've come.</p></div></div>
+        <div class="progress-summary" id="progressSummary"></div><div id="progressList" class="stack-list"></div>
+      </section>
+      <section id="page-skills" class="page"><div class="section-head"><div><div class="eyebrow">YOUR PERSONAL LIBRARY</div><h2>Achieved skills</h2><p class="muted">Every skill you've started or completed lives here.</p></div></div><div id="skillsList" class="skill-grid"></div></section>
+      <section id="page-resources" class="page"><div class="section-head"><div><div class="eyebrow">LEARN FROM THE BEST</div><h2>Learning resources</h2><p class="muted">A few trusted places to deepen your knowledge.</p></div></div><div class="resource-grid"><a class="resource-card glass" href="https://www.khanacademy.org/" target="_blank"><span>◈</span><b>Khan Academy</b><p>Free lessons in math, science and more.</p><small>khanacademy.org ↗</small></a><a class="resource-card glass" href="https://www.freecodecamp.org/learn/" target="_blank"><span>⌘</span><b>freeCodeCamp</b><p>Hands-on programming courses and projects.</p><small>freecodecamp.org ↗</small></a><a class="resource-card glass" href="https://www.youtube.com/education" target="_blank"><span>▷</span><b>YouTube Learning</b><p>Explore lectures, explainers and tutorials.</p><small>youtube.com/education ↗</small></a><a class="resource-card glass" href="https://ocw.mit.edu/" target="_blank"><span>▦</span><b>MIT OpenCourseWare</b><p>University-level courses and study material.</p><small>ocw.mit.edu ↗</small></a></div></section>
+      <section id="page-settings" class="page"><div class="section-head"><div><div class="eyebrow">MAKE IT YOURS</div><h2>Settings</h2><p class="muted">Set up a learning space that feels like you.</p></div></div><div class="settings-card glass"><h3>Appearance</h3><p class="muted">Choose your atmosphere.</p><div class="theme-options"><button class="theme-choice selected" data-theme="sunrise"><i class="swatch sunrise"></i><b>Sunrise</b><small>Warm & bright</small></button><button class="theme-choice" data-theme="forest"><i class="swatch forest"></i><b>Forest</b><small>Calm & grounded</small></button><button class="theme-choice" data-theme="lavender"><i class="swatch lavender"></i><b>Lavender</b><small>Soft & dreamy</small></button><button class="theme-choice" data-theme="midnight"><i class="swatch midnight"></i><b>Midnight</b><small>Deep & focused</small></button><button class="theme-choice" data-theme="ocean"><i class="swatch ocean"></i><b>Ocean</b><small>Fresh & clear</small></button><button class="theme-choice" data-theme="sakura"><i class="swatch sakura"></i><b>Sakura</b><small>Soft & playful</small></button><button class="theme-choice" data-theme="neon"><i class="swatch neon"></i><b>Neon</b><small>Bold & electric</small></button><button class="theme-choice" data-theme="aurora"><i class="swatch aurora"></i><b>Aurora</b><small>Cool & glowing</small></button><button class="theme-choice" data-theme="mocha"><i class="swatch mocha"></i><b>Mocha</b><small>Warm & cosy</small></button></div><h3>Typography</h3><div class="setting-row"><div><b>Font style</b><small>Choose the reading experience you like.</small></div><select id="fontSelect"><option value="modern">Modern — Manrope</option><option value="pixel">Pixel — DM Mono</option><option value="space">Space — Space Grotesk</option></select></div><h3>Tree appearance</h3><div class="setting-row"><div><b>Tree decoration</b><small>Choose the reward style. This is purely cosmetic.</small></div><select id="treeStyle"><option value="blossom">Blossoms</option><option value="apples">Apples</option><option value="butterflies">Butterflies</option></select></div><h3>Sound</h3><div class="setting-row"><div><b>Background music</b><small>Plays automatically when the page loads. Browsers may wait for your first click or tap. Turn it off here any time.</small></div><button class="toggle" id="soundToggle">Off</button></div></div></section>
+            <section id="page-leaderboard" class="page"><div class="section-head"><div><div class="eyebrow">COMPETE &amp; GROW</div><h2>Leaderboard</h2><p class="muted">Every lesson you pass earns points. Longer and harder lessons earn more.</p></div></div>
+        <div class="lb-tabs"><button class="active" data-lb="week">This week</button><button data-lb="all">All time</button></div>
+        <div id="leaderboardBody"></div></section>
+      <section id="page-profile" class="page"><div class="section-head"><div><div class="eyebrow">YOUR PUBLIC CARD</div><h2>My profile</h2><p class="muted">Pick a name and avatar. Only these and your points show on the leaderboard.</p></div></div>
+        <div id="profileBody"></div></section>
+      <section id="page-help" class="page"><div class="section-head"><div><div class="eyebrow">WE'RE HERE TO HELP</div><h2>Help & support</h2><p class="muted">Quick answers for your learning journey.</p></div></div><div class="faq-list"><details open><summary>How does a roadmap work?</summary><p>Enter a subject, choose your current level and weekly study time. The AI creates levels with lessons, practice tasks, quizzes and resources.</p></details><details><summary>How do I earn progress?</summary><p>Open a lesson, study the notes, complete its in-app practice task and pass the level quiz. Progress is saved to your account.</p></details><details><summary>Can I download my roadmap?</summary><p>Yes. Open a roadmap and choose Export PDF. You get a one-page flowchart of your whole journey. In the print window, choose Save as PDF or print it on paper.</p></details><details><summary>Why is there a daily limit?</summary><p>AI generation has a daily limit to keep usage fair and operating costs predictable. The default is 10 roadmaps per day.</p></details></div></section>
+      <footer class="main-foot">MADE WITH CURIOSITY <span>✳</span> SKILLORA <small>Grow at your own pace.</small></footer>
+    </main>
+  </div>
+  <button id="chatLauncher" class="chat-launcher">✦ <span>Need a hand?</span></button>
+  <div id="chatPanel" class="chat-panel glass"><div class="chat-head"><div><b>Skillora guide</b><small>Your friendly learning companion</small></div><button id="chatClose">×</button></div><div id="chatMessages" class="chat-messages"><div class="bot-msg">Hey there! ✨ I can help you create a roadmap, understand levels, or find your way around Skillora.</div></div><div class="chat-input"><input id="chatInput" placeholder="Ask me anything..."><button id="chatSend">➤</button></div></div>
+  <div id="toast" class="toast"></div>
+  <div id="modal" class="modal hidden"><div class="modal-card glass"><button class="modal-close" id="modalClose">×</button><div id="modalBody"></div></div></div>
+  <script type="module" src="/app.js"></script>
+</body></html>
