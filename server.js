@@ -164,13 +164,64 @@ async function initDatabase() {
 
 let firebaseReady = false;
 
+// Reads the service account from either:
+//   FIREBASE_SERVICE_ACCOUNT_BASE64  (recommended: paste-safe)
+//   FIREBASE_SERVICE_ACCOUNT_JSON    (the JSON on one line)
+// and repairs the usual copy/paste damage to the private key.
+function loadServiceAccount() {
+  let raw = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64
+    ? Buffer.from(
+        process.env.FIREBASE_SERVICE_ACCOUNT_BASE64.replace(/\s+/g, ""),
+        "base64"
+      ).toString("utf8")
+    : process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+
+  if (!raw) return null;
+
+  raw = raw.trim();
+
+  // Remove quotes someone may have added around the whole value.
+  if (
+    raw.length > 1 &&
+    (
+      (raw.startsWith("'") && raw.endsWith("'")) ||
+      (raw.startsWith('"') && raw.endsWith('"') && !raw.startsWith('{'))
+    )
+  ) {
+    raw = raw.slice(1, -1);
+  }
+
+  const account = JSON.parse(raw);
+
+  if (typeof account.private_key !== "string") {
+    throw new Error("the JSON has no private_key field");
+  }
+
+  // Rebuild the key from its base64 body. This repairs every common
+  // copy/paste problem: "\\n" typed literally, line breaks turned into
+  // spaces, or extra whitespace.
+  const match = account.private_key.match(
+    /-----BEGIN PRIVATE KEY-----([\s\S]*?)-----END PRIVATE KEY-----/
+  );
+
+  if (!match) {
+    throw new Error("private_key does not look like a key (BEGIN PRIVATE KEY missing)");
+  }
+
+  const body = match[1].replace(/\\n|\s+/g, "");
+
+  account.private_key =
+    "-----BEGIN PRIVATE KEY-----\n" +
+    body.match(/.{1,64}/g).join("\n") +
+    "\n-----END PRIVATE KEY-----\n";
+
+  return account;
+}
+
 try {
-  const serviceAccountJson =
-    process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+  const serviceAccount = loadServiceAccount();
 
-  if (serviceAccountJson) {
-    const serviceAccount = JSON.parse(serviceAccountJson);
-
+  if (serviceAccount) {
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount)
     });
@@ -186,8 +237,27 @@ try {
 } catch (error) {
   console.error(
     "Firebase configuration error:",
-    error.message
+    error.message,
+    "\nTip: set FIREBASE_SERVICE_ACCOUNT_BASE64 instead (see README)."
   );
+}
+
+{
+  const missing = [
+    "FIREBASE_API_KEY", "FIREBASE_AUTH_DOMAIN", "FIREBASE_PROJECT_ID",
+    "FIREBASE_APP_ID"
+  ].filter(name => !process.env[name]);
+
+  if (
+    !process.env.FIREBASE_SERVICE_ACCOUNT_BASE64 &&
+    !process.env.FIREBASE_SERVICE_ACCOUNT_JSON
+  ) {
+    missing.push("FIREBASE_SERVICE_ACCOUNT_BASE64");
+  }
+
+  if (missing.length) {
+    console.warn("Missing environment variables (names only):", missing.join(", "));
+  }
 }
 
 // ==========================================

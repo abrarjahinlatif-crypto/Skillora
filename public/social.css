@@ -54,3 +54,17 @@
 .profile-stats b{display:block;font-size:20px;color:var(--orange)}
 .profile-stats small{font-size:9px;color:var(--muted);letter-spacing:1px}
 .nav-item .emoji-icon{font-size:15px}
+
+/* ===== Sign-in button in the top bar + phone fixes ===== */
+.top-sign{padding:10px 16px;font-size:11px;white-space:nowrap}
+.top-sign[hidden]{display:none!important}
+.mobile-only{display:none!important}
+.sign-out-btn{margin-top:18px;margin-left:8px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:30px;padding:11px 18px;font:700 11px var(--font);cursor:pointer}
+.top-avatar{cursor:pointer}
+@media(max-width:760px){
+  .mobile-only{display:flex!important}
+  .topbar{flex-wrap:wrap;gap:10px}
+  .top-actions{width:100%;flex-wrap:wrap;justify-content:flex-end}
+  .top-sign{flex:1 1 100%;order:-1;padding:14px;font-size:13px;text-align:center}
+  body.signed-in .top-avatar{display:grid!important}
+}

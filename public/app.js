@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -206,7 +206,33 @@ function exportFlowchart(skill){
 	toast("In the print window, choose “Save as PDF” or your printer.");
 	setTimeout(()=>window.print(),150);
 }
-async function login(){if(!auth){toast("Google sign-in is not configured. Follow the setup guide in README.");return;}try{await signInWithPopup(auth,new GoogleAuthProvider());}catch(e){toast(e.message||"Sign-in failed.");}}
+function inAppBrowser(){return /FBAN|FBAV|FB_IAB|Instagram|Messenger|MicroMessenger|Snapchat|TikTok|musical_ly|Line\/|; wv\)/i.test(navigator.userAgent||"");}
+function friendlyAuthError(e){
+	const code=e?.code||"";
+	if(code==="auth/unauthorized-domain")return "This website address is not allowed for sign-in yet. The site owner must add it in Firebase → Authentication → Authorized domains.";
+	if(code==="auth/network-request-failed")return "Network problem. Check your connection and try again.";
+	if(code==="auth/popup-blocked")return "Your browser blocked the sign-in window. Allow pop-ups for this site and try again.";
+	if(code==="auth/internal-error"||code==="auth/invalid-api-key")return "Sign-in is not set up correctly on the server yet. Please try again later.";
+	return e?.message||"Sign-in failed. Please try again.";
+}
+async function login(){
+	if(!auth){toast("Sign-in is not set up on the server yet. Please try again later.");return;}
+	if(inAppBrowser()){
+		showModal(`<div class="eyebrow">ONE QUICK STEP</div><h2>Open in your browser to sign in</h2><p>Google does not allow sign-in inside apps like Facebook, Messenger or Instagram. Open this page in <b>Chrome</b> (tap ⋮ then “Open in browser”), or copy the link below.</p><p><b>${safe(location.origin)}</b></p><button class="primary-btn" id="copyLink">Copy link</button>`);
+		$("#copyLink").onclick=async()=>{try{await navigator.clipboard.writeText(location.origin);toast("Link copied. Paste it in Chrome.");}catch{toast("Copy the link from the address shown above.");}};
+		return;
+	}
+	const provider=new GoogleAuthProvider();
+	provider.setCustomParameters({prompt:"select_account"});
+	try{await signInWithPopup(auth,provider);}
+	catch(e){
+		if(e.code==="auth/popup-closed-by-user"||e.code==="auth/cancelled-popup-request")return;
+		if(["auth/popup-blocked","auth/operation-not-supported-in-this-environment","auth/web-storage-unsupported"].includes(e.code)){
+			try{await signInWithRedirect(auth,provider);return;}catch(e2){toast(friendlyAuthError(e2));return;}
+		}
+		toast(friendlyAuthError(e));
+	}
+}
 async function startAmbience(){
 	const AudioContextClass=window.AudioContext||window.webkitAudioContext;
 	if(!AudioContextClass)throw new Error("Ambient audio is not supported in this browser.");
@@ -282,8 +308,9 @@ async function renderProfile(){
 	<label for="pfName">DISPLAY NAME</label><input id="pfName" type="text" maxlength="24" value="${safe(profile.displayName)}">
 	<label>AVATAR</label><div class="avatar-grid">${profile.avatars.map(a=>`<button type="button" data-av="${safe(a)}" class="${a===chosen?"selected":""}">${safe(a)}</button>`).join("")}</div>
 	<label for="pfBio">ABOUT ME (OPTIONAL)</label><textarea id="pfBio" maxlength="120" placeholder="What are you learning?">${safe(profile.bio)}</textarea>
-	<button class="primary-btn" id="pfSave" style="margin-top:18px">Save profile</button><p class="muted" style="margin-top:10px">Your name, avatar and points are visible to other learners. Don't use your full name or contact details.</p></div>`;
+	<button class="primary-btn" id="pfSave" style="margin-top:18px">Save profile</button> <button class="sign-out-btn" id="pfSignOut" type="button">Sign out</button><p class="muted" style="margin-top:10px">Your name, avatar and points are visible to other learners. Don't use your full name or contact details.</p></div>`;
 	box.querySelectorAll("[data-av]").forEach(b=>b.onclick=()=>{chosen=b.dataset.av;box.querySelectorAll("[data-av]").forEach(x=>x.classList.toggle("selected",x===b));});
+	$("#pfSignOut").onclick=()=>signOut(auth);
 	$("#pfSave").onclick=async()=>{
 		const btn=$("#pfSave");btn.disabled=true;
 		try{await api("/api/profile",{method:"PUT",body:JSON.stringify({displayName:$("#pfName").value,avatar:chosen,bio:$("#pfBio").value})});await loadProfile();toast("Profile saved ✓");}
@@ -294,7 +321,7 @@ async function renderProfile(){
 function setupSocial(){
 	$$("[data-lb]").forEach(b=>b.onclick=()=>{lbPeriod=b.dataset.lb;renderLeaderboard();});
 }
-async function init(){try{config=await fetch("/api/config").then(r=>r.json());}catch{}updateUsage();if(config.authConfigured){firebaseApp=initializeApp(config.firebase);auth=getAuth(firebaseApp);onAuthStateChanged(auth,async u=>{user=u;if(u){$("#userName").textContent=u.displayName||"Learner";$("#userStatus").textContent="Signed in with Google";$("#avatar").textContent=(u.displayName||"S").charAt(0).toUpperCase();$("#topAvatar").textContent=$("#avatar").textContent;$("#signBtn").textContent="Sign out";await loadProgress();await refreshUsage();await loadProfile();}else{profile=null;resetProfileUi();$("#userName").textContent="Your learning space";$("#userStatus").textContent="Guest preview";$("#signBtn").textContent="Continue with Google ↗";await loadProgress();}});}else{await loadProgress();}
-$$("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dataset.page));$$("[data-goto]").forEach(b=>b.onclick=()=>showPage(b.dataset.goto));$("#generateBtn").onclick=generate;$("#subjectInput").onkeydown=e=>{if(e.key==="Enter")generate();};$("#signBtn").onclick=()=>user?signOut(auth):login();$("#modalClose").onclick=closeModal;$("#modal").onclick=e=>{if(e.target.id==="modal")closeModal();};
+async function init(){try{config=await fetch("/api/config").then(r=>r.json());}catch{}updateUsage();if(config.authConfigured){firebaseApp=initializeApp(config.firebase);auth=getAuth(firebaseApp);getRedirectResult(auth).catch(e=>toast(friendlyAuthError(e)));onAuthStateChanged(auth,async u=>{user=u;if(u){$("#userName").textContent=u.displayName||"Learner";$("#userStatus").textContent="Signed in with Google";$("#avatar").textContent=(u.displayName||"S").charAt(0).toUpperCase();$("#topAvatar").textContent=$("#avatar").textContent;$("#signBtn").textContent="Sign out";$("#topSignBtn").hidden=true;document.body.classList.add("signed-in");await loadProgress();await refreshUsage();await loadProfile();}else{profile=null;resetProfileUi();$("#userName").textContent="Your learning space";$("#userStatus").textContent="Guest preview";$("#signBtn").textContent="Continue with Google ↗";$("#topSignBtn").hidden=false;document.body.classList.remove("signed-in");await loadProgress();}});}else{await loadProgress();}
+$$("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dataset.page));$$("[data-goto]").forEach(b=>b.onclick=()=>showPage(b.dataset.goto));$("#generateBtn").onclick=generate;$("#subjectInput").onkeydown=e=>{if(e.key==="Enter")generate();};$("#signBtn").onclick=()=>user?signOut(auth):login();$("#topSignBtn").onclick=login;$("#topAvatar").onclick=()=>{if(user)showPage("profile");};$("#modalClose").onclick=closeModal;$("#modal").onclick=e=>{if(e.target.id==="modal")closeModal();};
 $$(".theme-choice").forEach(b=>b.onclick=()=>{progress.theme=b.dataset.theme;applyPrefs();saveProgress();});$("#fontSelect").onchange=e=>{progress.font=e.target.value;applyPrefs();saveProgress();};$("#treeStyle").onchange=e=>{progress.treeStyle=e.target.value;applyPrefs();saveProgress();};$("#soundToggle").onclick=()=>{progress.sound=!progress.sound;applyPrefs();saveProgress();toast(progress.sound?"Ambient sound preference saved. Sound playback can be added in a later release.":"Ambient sound disabled.");};setupChat();setupSocial();$("#dateLabel").textContent=new Intl.DateTimeFormat("en",{weekday:"long",month:"long",day:"numeric"}).format(new Date()).toUpperCase();}
 init();
