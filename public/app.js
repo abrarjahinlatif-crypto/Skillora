@@ -5,7 +5,7 @@ const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 let user = null, auth = null, firebaseApp = null, currentRoadmap = null, currentSkillId = null;
 let ambienceContext = null, ambienceSources = [], melodyTimer = null;
-let progress = { skills: [], streak: 0, lastActive: null, theme: "sunrise", font: "modern", treeStyle: "blossom", sound: false };
+let progress = { skills: [], streak: 0, lastActive: null, theme: "night", font: "modern", treeStyle: "blossom", sound: false };
 let config = { dailyLimit: 10, authConfigured: false, aiConfigured: false };
 const today = () => new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Dhaka" });
 const id = () => Math.random().toString(36).slice(2, 10);
@@ -15,8 +15,8 @@ function showPage(name) { $$(".page").forEach(p=>p.classList.toggle("active",p.i
 function getToken(){return user?.getIdToken();}
 async function api(url, opts={}) { const headers={"Content-Type":"application/json",...(opts.headers||{})}; if(user)headers.Authorization=`Bearer ${await getToken()}`; const r=await fetch(url,{...opts,headers});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.error||"Something went wrong.");return data; }
 async function saveProgress(){ if(user){try{await api("/api/progress",{method:"PUT",body:JSON.stringify(progress)});}catch(e){toast(e.message);}} else localStorage.setItem("skillora-preview",JSON.stringify(progress)); renderHome(); }
-async function loadProgress(){ if(user){try{progress=await api("/api/progress");}catch{}}else{try{progress=JSON.parse(localStorage.getItem("skillora-preview"))||progress;}catch{}} progress.sound=progress.musicOff!==true;applyPrefs();renderHome();startMusicIfWanted(); }
-function applyPrefs(){document.body.dataset.theme=progress.theme||"sunrise";document.body.dataset.font=progress.font||"modern";$$(".theme-choice").forEach(b=>b.classList.toggle("selected",b.dataset.theme===progress.theme));$("#fontSelect").value=progress.font||"modern";$("#treeStyle").value=progress.treeStyle||"blossom";$("#soundToggle").textContent=progress.sound?"On":"Off";}
+async function loadProgress(){ if(user){try{progress=await api("/api/progress");}catch{}}else{try{progress=JSON.parse(localStorage.getItem("skillora-preview"))||progress;}catch{}} if(!progress.designV2){progress.theme="night";progress.designV2=true;}progress.sound=progress.musicOff!==true;applyPrefs();renderHome();startMusicIfWanted(); }
+function applyPrefs(){document.body.dataset.theme=progress.theme||"night";document.body.dataset.font=progress.font||"modern";$$(".theme-choice").forEach(b=>b.classList.toggle("selected",b.dataset.theme===progress.theme));$("#fontSelect").value=progress.font||"modern";$("#treeStyle").value=progress.treeStyle||"blossom";$("#soundToggle").textContent=progress.sound?"On":"Off";}
 function updateUsage(used=0){$("#quotaText").textContent=Math.max(0,(config.dailyLimit||10)-used);}
 async function refreshUsage(){if(!user){updateUsage(0);return;}try{const d=await api("/api/usage");updateUsage(d.used);}catch{}}
 function renderHome(){const skills=progress.skills||[];$("#skillCount").textContent=skills.length;$("#streakCount").textContent=`${progress.streak||0} day streak`;$("#streakBig").innerHTML=`${progress.streak||0} <i>days</i>`;const completed=skills.filter(s=>s.completed).length;let tree="🌱",caption="A little growth every day";if(completed>=10){tree=progress.treeStyle==="apples"?"🌳🍎":progress.treeStyle==="butterflies"?"🌳🦋":"🌳🌸";caption="A flourishing learning forest";}else if(completed>=1){tree=progress.treeStyle==="apples"?"🌳🍎":progress.treeStyle==="butterflies"?"🌳🦋":"🌳🌼";caption=`${completed} skill${completed===1?"":"s"} completed — keep growing`;}else if(skills.length){tree="🌿";caption="Your first milestone is in reach";}$("#treeEmoji").textContent=tree;$("#treeCaption").textContent=caption;const stage=$("#treeStage");stage.classList.toggle("tree-awakened",completed>0);stage.classList.toggle("tree-elder",completed>=10);stage.querySelector(".tree-companions")?.remove();if(completed>=10){const lastActive=progress.lastActive?Date.parse(`${progress.lastActive}T00:00:00Z`):NaN,todayMs=Date.parse(`${today()}T00:00:00Z`),inactiveDays=Number.isFinite(lastActive)?Math.max(0,Math.floor((todayMs-lastActive)/86400000)):4,count=Math.max(0,4-inactiveDays),creature=progress.treeStyle==="butterflies"?"🦋":"🐦",group=document.createElement("div");group.className=`tree-companions ${creature==="🦋"?"butterfly-companions":"bird-companions"}`;group.setAttribute("aria-label",`${count} tree companions`);group.innerHTML=Array.from({length:count},(_,i)=>`<span style="--i:${i}">${creature}</span>`).join("");stage.append(group);}const recent=skills.slice().reverse();$("#recentSkills").innerHTML=recent.length?recent.map(skillCard).join(""):`<div class="empty-card glass"><span>✧</span><b>Your first skill is waiting.</b><p>Create a roadmap and watch your learning tree grow.</p></div>`;$$("[data-skill]").forEach(el=>el.addEventListener("click",()=>openSkill(el.dataset.skill)));}
@@ -318,7 +318,23 @@ async function renderProfile(){
 		btn.disabled=false;
 	};
 }
+function openMore(){
+	showModal(`<div class="eyebrow">MORE</div><h2>Menu</h2><div class="more-list">
+	<button class="outline-btn" data-more="skills">✳ Achieved skills</button>
+	<button class="outline-btn" data-more="resources">↗ Resources</button>
+	<button class="outline-btn" data-more="settings">⚙ Settings &amp; themes</button>
+	<button class="outline-btn" data-more="help">? Help &amp; support</button>
+	<button class="outline-btn" data-more="${user?"signout":"signin"}">${user?"Sign out":"Sign in with Google"}</button></div>`);
+	$$("[data-more]").forEach(b=>b.onclick=()=>{const t=b.dataset.more;closeModal();if(t==="signout")signOut(auth);else if(t==="signin")login();else showPage(t);});
+}
 function setupSocial(){
+	$("#moreBtn").onclick=openMore;
+	$$(".course-card").forEach(card=>card.onclick=()=>{
+		const input=$("#subjectInput");input.value=card.dataset.subject;
+		window.scrollTo({top:0,behavior:"smooth"});showPage("home");
+		setTimeout(()=>input.focus({preventScroll:true}),350);
+		toast("Topic filled in. Press “Build my roadmap” to start.");
+	});
 	$$("[data-lb]").forEach(b=>b.onclick=()=>{lbPeriod=b.dataset.lb;renderLeaderboard();});
 }
 async function init(){try{config=await fetch("/api/config").then(r=>r.json());}catch{}updateUsage();if(config.authConfigured){firebaseApp=initializeApp(config.firebase);auth=getAuth(firebaseApp);getRedirectResult(auth).catch(e=>toast(friendlyAuthError(e)));onAuthStateChanged(auth,async u=>{user=u;if(u){$("#userName").textContent=u.displayName||"Learner";$("#userStatus").textContent="Signed in with Google";$("#avatar").textContent=(u.displayName||"S").charAt(0).toUpperCase();$("#topAvatar").textContent=$("#avatar").textContent;$("#signBtn").textContent="Sign out";$("#topSignBtn").hidden=true;document.body.classList.add("signed-in");await loadProgress();await refreshUsage();await loadProfile();}else{profile=null;resetProfileUi();$("#userName").textContent="Your learning space";$("#userStatus").textContent="Guest preview";$("#signBtn").textContent="Continue with Google ↗";$("#topSignBtn").hidden=false;document.body.classList.remove("signed-in");await loadProgress();}});}else{await loadProgress();}
