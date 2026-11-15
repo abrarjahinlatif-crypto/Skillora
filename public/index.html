@@ -8,13 +8,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="/experience.css">
-  <link rel="stylesheet" href="/features.css">
-  <link rel="stylesheet" href="/themes.css">
-  <link rel="stylesheet" href="/social.css">
-  <link rel="stylesheet" href="/night.css">
-    <script src="/splash.js"></script>
+  <style id="safety">
+.bottom-bar{display:none}.night-art{display:none}
+.brand-mark svg,.logo-svg{width:42px;height:42px;display:block}
+.bottom-bar svg{width:22px;height:22px}
+.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.course-card{text-align:left;padding:16px;border:1px solid rgba(0,0,0,.12);border-radius:16px;background:rgba(255,255,255,.6);cursor:pointer;font:inherit;color:inherit}
+</style>
+<link rel="stylesheet" href="/styles.css?v=4">
+  <link rel="stylesheet" href="/experience.css?v=4">
+  <link rel="stylesheet" href="/features.css?v=4">
+  <link rel="stylesheet" href="/themes.css?v=4">
+  <link rel="stylesheet" href="/social.css?v=4">
+  <link rel="stylesheet" href="/night.css?v=4">
+    <script src="/splash.js?v=4"></script>
 </head>
 <body data-theme="night">
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
@@ -104,5 +111,5 @@
     <button class="nav-item tab" data-page="profile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg><span>Profile</span></button>
     <button class="tab" id="moreBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></svg><span>More</span></button>
   </nav>
-  <script type="module" src="/app.js"></script>
+  <script type="module" src="/app.js?v=4"></script>
 </body></html>

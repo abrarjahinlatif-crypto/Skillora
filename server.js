@@ -2060,6 +2060,12 @@ app.get("/api/video", requireUser, async (req, res) => {
   }
 });
 
+// Tiny endpoint for uptime pingers. It does NOT touch the database, so
+// pinging it never wakes (or bills) your Neon database.
+app.get("/ping", (req, res) => {
+  res.type("text/plain").set("Cache-Control", "no-store").send("ok");
+});
+
 // ==========================================
 // HEALTH CHECK
 // ==========================================
